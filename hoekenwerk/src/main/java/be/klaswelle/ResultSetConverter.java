@@ -1,3 +1,5 @@
+package be.klaswelle;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;

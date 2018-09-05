@@ -1,11 +1,22 @@
-package be.klas2;
+package be.klaswelle;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Servlet implementation class HoekenServlet
@@ -30,6 +41,9 @@ public class HoekenServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		// response.getWriter().append("Served at: ").append(request.getContextPath());
 		
+		JSONObject output = new JSONObject();
+		JSONArray studenten = new JSONArray();
+		
 		response.setContentType("application/json");
 		
 		PrintWriter out = response.getWriter();
@@ -38,12 +52,13 @@ public class HoekenServlet extends HttpServlet {
 		Statement stmt = null; // Or PreparedStatement if needed
 		ResultSet rs = null;
 		try {
+			InitialContext cxt = new InitialContext();
 			DataSource ds = (DataSource) cxt.lookup("java:/comp/env/jdbc/postgres");
 			conn = ds.getConnection();
-			stmt = conn.createStatement("select * from studenten");
-			rs = stmt.executeQuery();
-			ResultSetConverter resConv = new ResultSetConverter;
-			JSONArray studenten = resConv(rs);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT * FROM studenten");
+			ResultSetConverter resConv = new ResultSetConverter();
+			studenten = resConv.convert(rs);
 			rs.close();
 			rs = null;
 			stmt.close();
@@ -52,6 +67,9 @@ public class HoekenServlet extends HttpServlet {
 			conn = null; // Make sure we don't close it twice
 		} catch (SQLException e) {
 
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			// Always make sure result sets and statements are closed,
 			// and the connection is returned to the pool
@@ -81,7 +99,9 @@ public class HoekenServlet extends HttpServlet {
 			}
 		}
 		
-		out.print(jsonObject);
+		output.put("studenten", studenten);
+		
+		out.print(output.toString());
 		out.flush();
 	}
 

@@ -8,7 +8,7 @@
 		<servlet-name>HoekenServlet</servlet-name>
 		<display-name>HoekenServlet</display-name>
 		<description></description>
-		<servlet-class>be.klas2.HoekenServlet</servlet-class>
+		<servlet-class>be.klaswelle.HoekenServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>HoekenServlet</servlet-name>
