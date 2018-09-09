@@ -43,6 +43,7 @@ public class HoekenServlet extends HttpServlet {
 		
 		JSONObject output = new JSONObject();
 		JSONArray studenten = new JSONArray();
+		JSONArray hoeken = new JSONArray();
 		
 		response.setContentType("application/json");
 		
@@ -50,15 +51,20 @@ public class HoekenServlet extends HttpServlet {
 
 		Connection conn = null;
 		Statement stmt = null; // Or PreparedStatement if needed
+		Statement stmtHoeken = null;
 		ResultSet rs = null;
+		ResultSet rsHoeken = null;
 		try {
 			InitialContext cxt = new InitialContext();
 			DataSource ds = (DataSource) cxt.lookup("java:/comp/env/jdbc/postgres");
 			conn = ds.getConnection();
 			stmt = conn.createStatement();
+			stmtHoeken = conn.createStatement();
 			rs = stmt.executeQuery("SELECT * FROM studenten");
+			rsHoeken = stmtHoeken.executeQuery("SELECT hoeknaam FROM hoeken");
 			ResultSetConverter resConv = new ResultSetConverter();
 			studenten = resConv.convert(rs);
+			hoeken = resConv.convert(rsHoeken);
 			rs.close();
 			rs = null;
 			stmt.close();
@@ -81,6 +87,14 @@ public class HoekenServlet extends HttpServlet {
 				}
 				rs = null;
 			}
+			if (rsHoeken != null) {
+				try {
+					rsHoeken.close();
+				} catch (SQLException e) {
+					;
+				}
+				rsHoeken = null;
+			}
 			if (stmt != null) {
 				try {
 					stmt.close();
@@ -88,6 +102,14 @@ public class HoekenServlet extends HttpServlet {
 					;
 				}
 				stmt = null;
+			}
+			if (stmtHoeken != null) {
+				try {
+					stmtHoeken.close();
+				} catch (SQLException e) {
+					;
+				}
+				stmtHoeken = null;
 			}
 			if (conn != null) {
 				try {
@@ -100,6 +122,7 @@ public class HoekenServlet extends HttpServlet {
 		}
 		
 		output.put("studenten", studenten);
+		output.put("hoeken", hoeken);
 		
 		out.print(output.toString());
 		out.flush();

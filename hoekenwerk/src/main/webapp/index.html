@@ -3,18 +3,38 @@
 <head>
 <meta charset="ISO-8859-1">
 <link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="main.css">
 <title>Insert title here</title>
 </head>
 <body>
 <script src="js/jquery-3.3.1.min.js"></script>
 <script src="js/popper.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<div id="mainContainer" class="container-fluid">
+  
+</div>
 </body>
 <script>
 $.get( "/hoekenwerk/HoekenServlet", function( data ) {
 	  console.log(data);
-	  alert( "Load was performed." );
+	  $("<div/>").attr('class','row').attr('id', 'headerRow').appendTo($("#mainContainer"))
+	  $("<div/>").attr('class','col-lg-2').text("Studenten").appendTo($("#headerRow"))
+	  $.each(data.hoeken, function(i, val) {
+		  $("<div/>").attr('class','col-lg').html( "<img src=/hoekenwerk/HoekenImage?hoeknaam=" + encodeURIComponent(val.hoeknaam) + ">").appendTo($("#headerRow"))
+	  })
+	  //var parsedData = JSON.parse(data);
+	  $.each(data.studenten, function(i, val) {
+		  console.log(val)
+		  $("<div/>").attr('class','col-lg-2').text(val.voornaam + " " + val.naam).appendTo(
+		  $("<div/>").attr('class','row').attr('id', 'row' + val.stid).appendTo($("#mainContainer")));
+		  $.each(data.hoeken, function(iHoeken, valHoeken) {
+			  if((i % 2) == 0) {
+				$("<div/>").attr('class','col-lg').html("<button type='button' class='btn btn-warning btn-block'>Klaar!</button>").appendTo($("#row" + val.stid))
+			  } else {
+			  	$("<div/>").attr('class','col-lg').html("<button type='button' class='btn btn-danger btn-block'>Klaar!</button>").appendTo($("#row" + val.stid))
+			  }
+		  })
+	  })
 	});
 </script>
 </html>
-

@@ -10,9 +10,19 @@
 		<description></description>
 		<servlet-class>be.klaswelle.HoekenServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>HoekenImage</servlet-name>
+		<display-name>HoekenImage</display-name>
+		<description></description>
+		<servlet-class>be.klaswelle.HoekenImage</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>HoekenServlet</servlet-name>
 		<url-pattern>/HoekenServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>HoekenImage</servlet-name>
+		<url-pattern>/HoekenImage</url-pattern>
 	</servlet-mapping>
 
 	<resource-ref>
